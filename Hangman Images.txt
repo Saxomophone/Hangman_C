@@ -1,3 +1,9 @@
+ The purpose of this file is to show what the hangman stages look like
+ compressed into a string with newlines.
+ 
+ 
+ 
+ 
   -------------
 "\n\n\n\n\n\n\n\n  -------------"
 
