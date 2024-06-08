@@ -6,9 +6,13 @@
 
 
 #define MAX_INCORRECT_GUESSES 9
-void clearInputBuffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF) { }
+void clear_stdin() {
+    while ((getchar()) != '\n' && getchar() != EOF) { }
+}
+
+void delay(int milliseconds) {
+    clock_t start = clock();
+    while ((clock() - start) * 1000 / CLOCKS_PER_SEC < milliseconds) { }
 }
 
 void clearConsole() {
@@ -34,7 +38,7 @@ char *createWordProgress(int wordLength, const char word[], char guessedLetters[
             }
         }
         if (letterGuessed == false) {
-            strncat(wordProgress, "_", 1);
+            strncat(wordProgress, "_", 2);
         }
     }
     return wordProgress;
@@ -88,11 +92,11 @@ int gameMode() {
     int result = scanf("%4d", &mode);
     if (result != 1) {
         printf("Invalid input\n");
-        clearInputBuffer();
+        clear_stdin();
         return gameMode();
     } else if (mode != 1 && mode != 2) {
         printf("Invalid input\n");
-        clearInputBuffer();
+        clear_stdin();
         return gameMode();
     } else {
         return mode;
@@ -100,31 +104,30 @@ int gameMode() {
 }
 
 char* getWordFromUser() {
-    clearInputBuffer();         // clear the input buffer by looping through it until a newline character or EOF is found
+    clear_stdin();         // clear the input buffer by looping through it until a newline character or EOF is found
     char *word = malloc(sizeof(char) * 100);
     printf("Enter a word: ");
     int result = scanf("%100[^\n]", word);
     if (result != 1) {
         printf("Invalid input\n");
-        clearInputBuffer();
+        clear_stdin();
         return getWordFromUser();
     }
 
     if (checkWord(word) == false) {
         free(word);     //free the memory allocated for the word to avoid a memory leak
         word = NULL;
-        int c;
         word = getWordFromUser();
     }
     return word;
 }
 
-char *startGame(const char word[], int wordLength) {
+char *startGame(int wordLength) {
     int maxGuesses = wordLength + MAX_INCORRECT_GUESSES;
     char *guessedWord = malloc(sizeof(char) * maxGuesses);  // allocate memory for the array of letters guessed
     guessedWord[0] = '\0';  // initialize to an empty string (use '\0' instead of "" because it'll throw a warning or error as it expects a string not a single character)
     for (int i = 0; i < wordLength; i++) {
-        strncat(guessedWord, "_", 1);
+        strncat(guessedWord, "_", 2);
     }    
     return guessedWord;
 }
@@ -156,7 +159,7 @@ char* seperateGuessedLetters(char* guessedLetters) {
         strncat(seperatedGuessedLetters, temp, 1);  // if I just use the index I am giving it a char not string which it requires 
 
         if (i+1 < guessedLettersLength) {           //if i is the last value in the array or the null terminator, don't add a comma and space
-            strncat(seperatedGuessedLetters, ", ", 2);
+            strncat(seperatedGuessedLetters, ", ", 3);
         }
     }
     return seperatedGuessedLetters;
@@ -166,7 +169,6 @@ char* seperateGuessedLetters(char* guessedLetters) {
 void guesses(const char word[], const int wordLength, char wordProgress[]) {
     int i = 0;                                          //i is the number of guesses used
     char guess[51];                                     //allocate memory for the guess
-    int incorrectGuesses = 0;
     char *guessedLetters = malloc(sizeof(char)*24);   //allocate memory for 24 different letters of alphabet
     guessedLetters[0] = '\0';                           //initialize to an empty string to avoid garbage values
     char*seperatedGuessedLetters = "";                 //initialize to avoid garbage values
@@ -183,13 +185,13 @@ void guesses(const char word[], const int wordLength, char wordProgress[]) {
         int result = scanf("%51s", guess);          //scanf returns the number of items successfully read
         if (result != 1) {                          //if scanf doesn't return 1, it means it didn't read the input correctly
             printf("Invalid input\n");              //or that the input was invalid
-            clearInputBuffer();
+            clear_stdin();
             continue;           //restarts the loop
         }
         if (strlen(guess) == 1) {                               //if the guess is a single letter not a word
             if (letterInArray(guessedLetters, guess[0])) {      //checks if the letter has already been guessed
                 printf("\nYou already guessed %s\n", guess);
-                Sleep(750); 
+                delay(750); 
                 continue;           //restarts the loop
             }
             else {
@@ -204,11 +206,11 @@ void guesses(const char word[], const int wordLength, char wordProgress[]) {
                     break;
                 } else {
                     printf("\n%s is correct\n", guess);
-                    Sleep(750);
+                    delay(750);
                 }
             } else {
                 printf("\n%s is not in the word\n", guess);
-                Sleep(750);    
+                delay(750);    
                 i++;
                 if (i == MAX_INCORRECT_GUESSES) {           //11th index == last guess
                     displayWinOrLoss(i, seperatedGuessedLetters, wordProgress, word, 0);
@@ -219,13 +221,13 @@ void guesses(const char word[], const int wordLength, char wordProgress[]) {
         }
         if (strlen(guess) > 1) {
             if (strcmp(guess, word) == 0) {            //0 = true
-                Sleep(750);
+                delay(750);
                 displayWinOrLoss(i, seperatedGuessedLetters, wordProgress, word, 1);       
                 free(guessedLetters);       //free the memory allocated for the guessedLetters to avoid a memory leak
                 break;
             } else {
                 printf("\n%s is not the word\n", guess);
-                Sleep(750);
+                delay(750);
                 i++;
                 if (i == MAX_INCORRECT_GUESSES) {       
                     displayWinOrLoss(i, seperatedGuessedLetters, wordProgress, word, 0);
@@ -283,7 +285,7 @@ char* selectWordFromFile(char* word) {
             }
     free(wordReservoir);   //free the memory for the last word
     fclose(in_file);      //close the file
-    Sleep(750);
+    delay(750);
     return word;
 }
 
@@ -299,7 +301,7 @@ int main() {
     }
     int wordLength = strlen(word);
     clearConsole();
-    char *wordProgress = startGame(word, wordLength);
+    char *wordProgress = startGame(wordLength);
     guesses(word, wordLength, wordProgress);
 
     //free the memory allocated for the pointers to avoid memory leaks
