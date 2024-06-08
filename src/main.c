@@ -123,7 +123,7 @@ char* getWordFromUser() {
 }
 
 char *startGame(int wordLength) {
-    int maxGuesses = wordLength + MAX_INCORRECT_GUESSES;
+    int maxGuesses = wordLength + MAX_INCORRECT_GUESSES;    // maxGuesses is not gameplay related, I just need to know how much memory to allocate for the array
     char *guessedWord = malloc(sizeof(char) * maxGuesses);  // allocate memory for the array of letters guessed
     guessedWord[0] = '\0';  // initialize to an empty string (use '\0' instead of "" because it'll throw a warning or error as it expects a string not a single character)
     for (int i = 0; i < wordLength; i++) {
@@ -241,7 +241,7 @@ void guesses(const char word[], const int wordLength, char wordProgress[]) {
 }
 
 FILE* openFile() {
-    FILE *in_file = fopen("wordBank.txt", "r");
+    FILE *in_file = fopen("include/wordBank.txt", "r");
     if (in_file == NULL) {
         printf("Error: File cannot be read\n");
         exit(1);
