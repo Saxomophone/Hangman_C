@@ -10,7 +10,7 @@ void clear_stdin() {
     while ((getchar()) != '\n' && getchar() != EOF) { }
 }
 
-void delay(int milliseconds) {
+void delay(const unsigned int milliseconds) {
     clock_t start = clock();
     while ((clock() - start) * 1000 / CLOCKS_PER_SEC < milliseconds) { }
 }
@@ -182,7 +182,7 @@ void guesses(const char word[], const int wordLength, char wordProgress[]) {
         printf("\n%s", hangmanImages[i]);
         printf("\nWord: %s", wordProgress); 
         printf("\nGuess: ");
-        int result = scanf("%51s", guess);          //scanf returns the number of items successfully read
+        int result = scanf("%50s", guess);          //scanf returns the number of items successfully read
         if (result != 1) {                          //if scanf doesn't return 1, it means it didn't read the input correctly
             printf("Invalid input\n");              //or that the input was invalid
             clear_stdin();
