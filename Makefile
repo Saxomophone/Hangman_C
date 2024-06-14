@@ -9,3 +9,6 @@ compile:
 
 run:
 	./build/main
+
+asm: 
+	$(CC) $(CFLAGS) -fverbose-asm -S src/main.c -o src/main.s
