@@ -1,0 +1,123 @@
+Define constants:
+    MAX_INCORRECT_GUESSES = 9
+
+Function clear_stdin():
+    While the next character is not a newline or EOF:
+        Read and discard the next character
+
+Function delay(milliseconds):
+    Start = current time
+    While elapsed time since start is less than milliseconds:
+        Continue
+
+Function clearConsole():
+    If operating system is Windows:
+        Execute command "cls" to clear console
+    Else:
+        Execute command "clear" to clear console
+
+Function createWordProgress(wordLength, word, guessedLetters):
+    Initialize wordProgress as an empty string
+    For each character in word:
+        If the character is in guessedLetters:
+            Append the character to wordProgress
+        Else:
+            Append "_" to wordProgress
+    Return wordProgress
+
+Function letterInArray(word, letter):
+    For each character in word:
+        If the character matches the letter:
+            Return true
+    Return false
+
+Function checkWord(word):
+    For each character in word:
+        If the character is not a letter and not a space:
+            Print error message and return false
+    Return true
+
+Function gameMode():
+    Display menu for selecting game mode
+    Read user input
+    If input is invalid:
+        Clear input buffer and call gameMode recursively
+    Return selected mode
+
+Function getWordFromUser():
+    Clear input buffer
+    Prompt user for a word
+    Read user input
+    If input is invalid:
+        Clear input buffer and call getWordFromUser recursively
+    If word contains invalid characters:
+        Free memory allocated for word and call getWordFromUser recursively
+    Return word
+
+Function startGame(wordLength):
+    Allocate memory for guessedWord based on wordLength and MAX_INCORRECT_GUESSES
+    Initialize guessedWord with underscores
+    Return guessedWord
+
+Function displayWinOrLoss(i, seperatedGuessedLetters, wordProgress, word, winCase):
+    Clear console
+    Display guessed letters, hangman image, and outcome (win or loss)
+
+Function seperateGuessedLetters(guessedLetters):
+    Allocate memory for seperatedGuessedLetters
+    For each character in guessedLetters:
+        Append character and ", " to seperatedGuessedLetters
+    Return seperatedGuessedLetters
+
+Function guesses(word, wordLength, wordProgress):
+    Initialize variables for tracking guesses and guessed letters
+    While number of incorrect guesses is less than or equal to MAX_INCORRECT_GUESSES:
+        Clear console and display game state
+        Read user guess
+        If guess is invalid:
+            Clear input buffer and continue to next iteration
+        If guess is a single letter:
+            If letter is already guessed:
+                Inform user and continue to next iteration
+            Else:
+                Add letter to guessedLetters and update wordProgress
+                If wordProgress matches word:
+                    Display win message and break loop
+                Else if letter is in word:
+                    Inform user that guess is correct
+                Else:
+                    Increment incorrect guesses counter
+        If guess is the word:
+            Display win message and break loop
+        Else:
+            Increment incorrect guesses counter
+    If maximum incorrect guesses reached:
+        Display loss message
+
+Function openFile():
+    Open file "include/wordBank.txt" for reading
+    If file cannot be opened:
+        Print error message and exit program
+    Return file pointer
+
+Function checkMallocSuccess(pointer):
+    If pointer is NULL:
+        Print error message and exit program
+
+Function selectWordFromFile(word):
+    Seed random number generator
+    Open file and initialize variables
+    For each line in file:
+        Generate a random number and calculate its remainder with the total lines read so far
+        If remainder is 0:
+            Replace word in reservoir with current line
+    Copy word from reservoir to word variable
+    Close file and return word
+
+Main function:
+    Initialize word to NULL
+    Determine game mode and set word accordingly
+    Get word length and start game
+    Call guesses function with word, wordLength, and wordProgress
+    Free memory allocated for wordProgress and word
+    Return 0
