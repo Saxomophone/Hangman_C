@@ -30,8 +30,8 @@ char *createWordProgress(int wordLength, const char word[], char guessedLetters[
     int initalLength = strlen(guessedLetters);          //define outside both for loops for efficiency
     for (int i = 0; i < wordLength; i++) {              //uses < rather than <= because the first element is index 0
         letterGuessed = false;                          //reset to false for each letter
-        for (int j = 0; j < initalLength; j++) {        //Can't use strlen(guessedLetters) as the condition because it changes as the loop runs as more values get concatenated to it.
-            if (word[i] == guessedLetters[j]) {         //
+        for (int j = 0; j < initalLength; j++) {        
+            if (word[i] == guessedLetters[j]) {         
                 char temp[2] = {word[i], '\0'};         //strncat wants a string and word[i] is a char so this makes it a string with a null terminator at the end
                 strncat(wordProgress, temp, 1);
                 letterGuessed = true;
