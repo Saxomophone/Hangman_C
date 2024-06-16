@@ -262,6 +262,8 @@ char* selectWordFromFile(char* word) {
     char line[100];
     int maxLinesInTxtFile = 0;
     char *wordReservoir = NULL;     //wordReservoir is where the latest word is stored
+    
+    FILE *trace_table_data = fopen("generated/trace_table_data.txt", "w");
 
     while (fgets(line, sizeof(line), in_file) != NULL) {
         maxLinesInTxtFile++;
@@ -276,7 +278,12 @@ char* selectWordFromFile(char* word) {
             checkMallocSuccess(wordReservoir);
             strcpy(wordReservoir, line);        
         }
+        fprintf(trace_table_data, "line: %s", line);
+        fprintf(trace_table_data, "maxLinesInTxtFile: %d\n", maxLinesInTxtFile);    
+        fprintf(trace_table_data, "wordReservoir: %s", wordReservoir);
     }
+
+    fclose(trace_table_data);
 
     word = malloc(strlen(wordReservoir) +1);
     strcpy(word, wordReservoir);        //using strcpy rather than just word = wordReservoir so that I can free wordReservoir before I forget.
